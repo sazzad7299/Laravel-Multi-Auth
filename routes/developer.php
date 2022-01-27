@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Developer\AuthController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 
 
 Route::prefix('developer')->middleware('theme:developer')->name('developer.')->group(function(){
@@ -11,6 +12,8 @@ Route::prefix('developer')->middleware('theme:developer')->name('developer.')->g
         Route::post('/login',[AuthController::class,'store']);
         Route::post('/register',[AuthController::class,'register']);
         Route::get('verified/{code}',[AuthController::class,'verified']);
+        Route::get('/forgot-password', [AuthController::class, 'forget'])->name('password.request');
+        Route::post('/forgot-password', [AuthController::class, 'generatePassword'])->name('password.email');
     });
 
     Route::middleware(['auth:developer'])->group(function () {
@@ -18,3 +21,4 @@ Route::prefix('developer')->middleware('theme:developer')->name('developer.')->g
         Route::view('/home', 'home')->name('home');
     });
 });
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');

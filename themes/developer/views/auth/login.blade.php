@@ -74,7 +74,7 @@
 
                         @if (Route::has('password.request'))
                         <a class="ml-auto text-sm text-blue-500 no-underline whitespace-no-wrap hover:text-blue-700 hover:underline"
-                            href="{{ route('password.request') }}">
+                            href="{{ route('developer.password.request') }}">
                             {{ __('Forgot Your Password?') }}
                         </a>
                         @endif
