@@ -83,7 +83,7 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->intended(route('login'))->with('warning','Your Email Account already verified. You can Login');
             }else{
                 User::where('email',$email)->update(['email_verified_at'=>Carbon::now(),'status'=>1]);
-                return redirect()->intended(route('login'))->with('success','Your Email Account has been verified successfully Activate. You can Login');
+                return redirect()->intended(route('login'))->with('success','Your Email Account has been verified successfully. You can Login');
             }
         }else{
             abort(404);
