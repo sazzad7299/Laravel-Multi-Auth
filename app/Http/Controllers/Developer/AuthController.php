@@ -13,13 +13,24 @@ class AuthController extends Controller
 {
   public function store(Request $request)
   {
-      if(!Auth::guard('developer')->attempt($request->only('email','password'),$request->filled('remember'))){
-          throw ValidationException::withMessages([
-              'email'=> 'Invalid Email or Password',
-              'password'=> 'Invalid Email or Password'
-          ]);
+
+    if($request->isMethod('post')){
+      $data = $request->all();
+      $userStatus= Developer::where('email',$data['email'])->first();
+      if(Hash::check($data['password'], $userStatus->password)){
+      if($userStatus->status==0){
+        return redirect()->back()->with('flash_login_massage_error','Please activate your Account before login');
+      }else{
+        Auth::guard('developer')->attempt(['email' => $data['email'], 'password' => $data['password']]);
+        return redirect()->intended(route('developer.home'));
       }
-      return redirect()->intended(route('developer.home'));
+      } else{
+        throw ValidationException::withMessages([
+          'email' => __('auth.failed'),
+      ]);
+      }
+    }
+    
   }
   public function register(Request $request)
   {
@@ -30,12 +41,13 @@ class AuthController extends Controller
         'email' => 'required|string|email|max:255|unique:users',
         'password' => 'required|string|confirmed|min:8',
     ]);
-
-    Auth::login($user = Developer::create([
+    
+    $user = Developer::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
-    ]));
+    ]);
+    return redirect()->back()->with('success','Your Account Created Successfully. Please Verify your mail before login');
   }
   public function destroy(Request $request)
     {
