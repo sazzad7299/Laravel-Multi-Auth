@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Developer;
 
+use Carbon\Carbon;
 use App\Models\Developer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -38,17 +40,38 @@ class AuthController extends Controller
     //   dd($data);
     $request->validate([
         'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users',
+        'email' => 'required|string|email|max:255|unique:developers',
         'password' => 'required|string|confirmed|min:8',
     ]);
-    
-    $user = Developer::create([
+      $user = Developer::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
-    ]);
+      ]);
+      $data= $request->all();
+      $email =$data['email'];
+      $messageData = ['email'=>$data['email'],'name'=>$data['name'],'code'=>base64_encode($email)];
+      Mail::send('auth.email.verify',$messageData,function($message) use($email){
+          $message->to($email)->subject('Verify Your Email!');
+      });
     return redirect()->back()->with('success','Your Account Created Successfully. Please Verify your mail before login');
+
   }
+  public function verified($code)
+    {
+      $email =base64_decode($code);
+      $userCount = Developer::where('email',$email)->count();
+      if($userCount > 0){
+        $userDetails = Developer::where('email',$email)->first();
+        if($userDetails->status==1){
+          return redirect()->route('developer.login')->with('warning','Your Email Account already verified. You can Login');
+        }
+        else{
+          Developer::where('email',$email)->update(['email_verified_at'=>Carbon::now(),'status'=>1]);
+          return redirect()->route('developer.login')->with('success','Your Email Account has been verified successfully. You can Login');
+      }
+      }
+    }
   public function destroy(Request $request)
     {
         Auth::guard('developer')->logout();

@@ -10,6 +10,7 @@ Route::prefix('developer')->middleware('theme:developer')->name('developer.')->g
         Route::view('/register','auth.register')->name('register');
         Route::post('/login',[AuthController::class,'store']);
         Route::post('/register',[AuthController::class,'register']);
+        Route::get('verified/{code}',[AuthController::class,'verified']);
     });
 
     Route::middleware(['auth:developer'])->group(function () {
