@@ -1,4 +1,4 @@
-# Laravel multi-auth example
+# Laravel multi-auth 
 Here I cover 3type of user functionality
 
 
