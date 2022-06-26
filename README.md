@@ -1,4 +1,5 @@
 # Laravel multi-auth example
+Here I cover 3type of user functionality
 
 
 ## Video Tutorial
@@ -8,9 +9,8 @@
 ## Setup
 
 Download or clone this repo
-```shell
-$ git clone https://github.com/qirolab/laravel-multi-auth-example.git
-```
+
+
 
 Install all dependency required by Laravel.
 ```shell
