@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.loginregister')
 
 @section('content')
 <main class="sm:container sm:mx-auto sm:max-w-lg sm:mt-10">
